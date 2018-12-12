@@ -6,7 +6,7 @@ Rails.configuration.to_prepare do
   Redmine::Search.available_search_types << 'kb_articles'
 end
 
-ActionDispatch::Reloader.to_prepare do
+ActiveSupport::Reloader.to_prepare do
   require 'macros'
   require 'concerns/knowledgebase_project_extension'
   Project.send :include, KnowledgebaseProjectExtension
@@ -15,11 +15,11 @@ end
 
 Redmine::Plugin.register :redmine_knowledgebase do
   name        'Knowledgebase'
-  author      'Alex Bevilacqua'
+  author      'Alex Bevilacqua, Southbridge'
   author_url  "http://www.alexbevi.com"
   description 'A plugin for Redmine that adds knowledgebase functionality'
-  url         'https://github.com/alexbevi/redmine_knowledgebase'
-  version     '3.3.1'
+  url         'https://github.com/centosadmin/redmine_knowledgebase'
+  version     '4.0.0'
 
   requires_redmine :version_or_higher => '3.0.0'
   requires_acts_as_taggable_on

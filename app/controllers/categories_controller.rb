@@ -7,8 +7,8 @@ class CategoriesController < ApplicationController
   helper :watchers
   include WatchersHelper
 
-  before_filter :find_project_by_project_id, :authorize
-  before_filter :get_category, :only => [:show, :edit, :update, :destroy, :index]
+  before_action :find_project_by_project_id, :authorize
+  before_action :get_category, :only => [:show, :edit, :update, :destroy]
   accept_rss_auth :show
 
   rescue_from ActiveRecord::RecordNotFound, :with => :force_404
@@ -103,6 +103,10 @@ class CategoriesController < ApplicationController
     else
       render :action => 'edit'
     end
+  end
+
+  def params
+    super.to_unsafe_h
   end
 
 #######

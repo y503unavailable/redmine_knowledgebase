@@ -2,6 +2,10 @@ class KbMailer < Mailer
 
   add_template_helper(KnowledgebaseHelper)
 
+  def process(action, *args)
+    super(action, User.current, *args)
+  end
+
   def article_create(article)
 	redmine_headers 'Project' => article.project.identifier
 	@project = article.project
@@ -14,7 +18,7 @@ class KbMailer < Mailer
     :subject => "[#{@project.name}] #{@article.category.title}: \"#{article.title}\" - #{l(:label_new_article)}"
   end
   
-  def article_update(article)
+  def article_update(_user, article)
 	redmine_headers 'Project' => article.project.identifier
 	@project = article.project
 	@article = article
@@ -26,7 +30,7 @@ class KbMailer < Mailer
 		:subject => "[#{@project.name}] #{@article.category.title}: \"#{article.title}\" - #{l(:label_article_updated)}"
   end
   
-  def article_destroy(article)
+  def article_destroy(_user, article)
 	redmine_headers 'Project' => article.project.identifier
 	@project = article.project
  	@article = article
@@ -38,7 +42,7 @@ class KbMailer < Mailer
 		:subject => "[#{@project.name}] #{@article.category.title}: \"#{article.title}\" - #{l(:label_article_removed)}"
   end
   
-  def article_comment(article, comment)
+  def article_comment(_user, article, comment)
 	redmine_headers 'Project' => article.project.identifier
 	@project = article.project	
  	@article = article	

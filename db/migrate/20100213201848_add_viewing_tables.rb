@@ -1,4 +1,4 @@
-class AddViewingTables < ActiveRecord::Migration
+class AddViewingTables < ActiveRecord::Migration[4.2]
   require 'acts_as_viewed'
   
   def self.up

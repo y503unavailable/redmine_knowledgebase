@@ -1,4 +1,4 @@
-class AddRatingsToArticles < ActiveRecord::Migration
+class AddRatingsToArticles < ActiveRecord::Migration[4.2]
   require 'acts_as_rated'
   
   def self.up

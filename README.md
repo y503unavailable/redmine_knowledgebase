@@ -16,9 +16,7 @@ This plugin adds professional knowledgebase functionality to the [Redmine](http:
 
 ## Warnings
 
-The latest version of this plugin is for Redmine 3.x and up. If you're still using Redmine 2.x, you should checkout the `redmine-2.x` branch.
-
-This plugin can not coexist with the Redmine CRM plugin due to conflicts related to tagging.
+This version of the plugin is adapted for Redmine 4.0-stable (Rails 5.2.2) and won't work on earlier Redmine versions.
 
 ## Introduction
 
@@ -239,5 +237,6 @@ Now that categories and articles have been created, the home page of the Knowled
 * Released under the MIT license.  See LICENSE file.
 * Copyright (c) 2010-2016 Alex Bevilacqua, original author.
 * Modifications (c) 2016-2018 Rob Spearman.
+* Redmine 4 adaptation (c) 2018 Southbridge
 
 This plugin would not be possible without the many contributions from the community. See [AUTHORS](https://github.com/alexbevi/redmine_knowledgebase/blob/master/AUTHORS) for the full list.

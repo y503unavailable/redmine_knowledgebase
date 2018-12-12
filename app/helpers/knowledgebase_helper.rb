@@ -2,6 +2,7 @@ module KnowledgebaseHelper
   include Redmine::Export::PDF
   include KnowledgebaseSettingsHelper
   include ActionView::Helpers::NumberHelper
+  include Rails.application.routes.url_helpers
 
   def format_article_summary(article, format, options = {})
     output = case format
