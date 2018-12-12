@@ -1,9 +1,9 @@
 language: ruby
 rvm:
-  - 2.0.0
-  - 1.9.3
+  - 2.3.6
+  - 2.5.1
 env:
-  - REDMINE_VERSION=2.3.3 VERBOSE=yes
+  - REDMINE_VERSION=4.0-stable VERBOSE=yes
 script:
   - export WORKSPACE=$(pwd)/workspace
   - export PLUGIN=redmine_knowledgebase
