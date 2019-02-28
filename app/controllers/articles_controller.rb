@@ -14,6 +14,9 @@ class ArticlesController < ApplicationController
   rescue_from ActionView::MissingTemplate, :with => :force_404
   rescue_from ActiveRecord::RecordNotFound, :with => :force_404
 
+  attr_accessor :section, :section_hash, :text
+  helper_method :section, :section_hash, :text
+
   def index
     summary_limit = redmine_knowledgebase_settings_value(:summary_limit).to_i
 
@@ -30,7 +33,6 @@ class ArticlesController < ApplicationController
 
     @tags = @project.articles.tag_counts.sort { |a, b| a.name.downcase <=> b.name.downcase }
     @tags_hash = Hash[ @project.articles.tag_counts.map{ |tag| [tag.name.downcase, 1] } ]
-
   end
 
   def authored
@@ -116,7 +118,7 @@ class ArticlesController < ApplicationController
   end
 
   def edit
-    if not @article.editable_by?(User.current)
+    unless @article.editable_by?(User.current)
       render_403
       return false
     end
@@ -129,6 +131,13 @@ class ArticlesController < ApplicationController
     @tags = @project.articles.tag_counts
     @kb_article_editing = true
     @kb_use_thumbs = redmine_knowledgebase_settings_value(:show_thumbnails_for_articles)
+
+    @text = @article.content
+    if params[:section].present?
+      @section = params[:section].to_i
+      @text, @section_hash = Redmine::WikiFormatting.formatter.new(@text).get_section(@section)
+      render_404 if @text.blank?
+    end
   end
 
   def update
@@ -139,18 +148,31 @@ class ArticlesController < ApplicationController
     end
 
     @article.updater_id = User.current.id
-    params[:article][:category_id] = params[:category_id]
+    params[:article][:category_id] = params[:category_id] if params[:category_id].present?
     @categories = @project.categories.all
     # don't keep previous comment
     @article.version_comments = nil
     @article.version_comments = params[:article][:version_comments]
-    if @article.update_attributes(params[:article])
-      attachments = attach(@article, params[:attachments])
+
+    if params[:section].present?
+      @section = params[:section].to_i
+      @section_hash = params[:section_hash]
+      @text = params[:article].delete(:content)
+      @article.content = Redmine::WikiFormatting.formatter.new(@article.content)
+                             .update_section(@section, @text, @section_hash)
+    else
+      @text = params.dig(:article, :content)
+    end
+
+    @article.assign_attributes(params[:article])
+    if @article.save
+      attach(@article, params[:attachments])
       flash[:notice] = l(:label_article_updated)
-      redirect_to({ :action => 'show', :id => @article.id, :project_id => @project })
+      redirect_to(action: 'show', id: @article.id, project_id: @project)
       KbMailer.article_update(@article).deliver
     else
-      render({:action => 'edit', :id => @article.id})
+      @tags = @project.articles.tag_counts
+      render(action: 'edit', id: @article.id)
     end
   end
 
@@ -246,12 +268,10 @@ class ArticlesController < ApplicationController
   end
 
   def params
-    super.to_unsafe_h
+    @params ||= super.to_unsafe_h.with_indifferent_access
   end
 
-#######
-private
-#######
+  private
 
   # Abstract attachment method to resolve how files should be attached to a model.
   # In newer versions of Redmine, the attach_files functionality was moved
@@ -272,5 +292,4 @@ private
   def force_404
     render_404
   end
-
 end
