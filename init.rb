@@ -18,7 +18,7 @@ Redmine::Plugin.register :redmine_knowledgebase do
   author      'Alex Bevilacqua, Southbridge'
   author_url  "http://www.alexbevi.com"
   description 'A plugin for Redmine that adds knowledgebase functionality'
-  url         'https://github.com/centosadmin/redmine_knowledgebase'
+  url         'https://github.com/southbridgeio/redmine_knowledgebase'
   version     '4.0.0'
 
   requires_redmine :version_or_higher => '3.0.0'
